@@ -2,7 +2,7 @@
  * @Author: 唐云
  * @Date: 2021-07-25 21:48:32
  * @Last Modified by: 唐云
- * @Last Modified time: 2021-08-23 16:39:00
+ * @Last Modified time: 2021-08-23 17:18:14
  * 字典管理
  */
 const Dict = require('../models/dicts')
@@ -27,10 +27,6 @@ class DictCtl {
   // 创建/更新字典
   async update(ctx) {
     const { id, code } = ctx.request.body
-    const haveCode = await Dict.findOne({ where: { code } })
-    if (haveCode) {
-      ctx.throw(200, '类型代码已存在')
-    }
     if (id) {
       ctx.verifyParams({
         code: { type: 'string', require: false },
@@ -44,6 +40,10 @@ class DictCtl {
       }
       await Dict.update(ctx.request.body, { where: { id } })
     } else {
+      const haveCode = await Dict.findOne({ where: { code } })
+      if (haveCode) {
+        ctx.throw(200, '类型代码已存在')
+      }
       ctx.verifyParams({
         code: { type: 'string', require: true },
         name: { type: 'string', require: true },
