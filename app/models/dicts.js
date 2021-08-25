@@ -2,7 +2,7 @@
  * @Author: 唐云
  * @Date: 2021-07-25 21:49:05
  * @Last Modified by: 唐云
- * @Last Modified time: 2021-08-23 14:56:40
+ * @Last Modified time: 2021-08-24 17:31:05
  * 字典模型
  */
 const { DataTypes } = require('sequelize')
@@ -30,6 +30,10 @@ const Dict = sequelize.define(
       allowNull: true,
     },
     if_parent: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    sort: {
       type: DataTypes.STRING,
       allowNull: false,
     },

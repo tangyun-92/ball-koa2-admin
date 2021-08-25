@@ -2,7 +2,7 @@
  * @Author: 唐云
  * @Date: 2021-07-25 21:48:32
  * @Last Modified by: 唐云
- * @Last Modified time: 2021-08-23 17:18:14
+ * @Last Modified time: 2021-08-24 17:17:47
  * 字典管理
  */
 const Dict = require('../models/dicts')
@@ -13,7 +13,7 @@ class DictCtl {
   // 获取字典列表
   async find(ctx) {
     const { count, rows } = await Dict.findAndCountAll({
-      order: ['id'],
+      order: ['sort'],
     })
     const data = createTree(rows, '0')
     ctx.body = returnCtxBody({

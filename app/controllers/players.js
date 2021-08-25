@@ -2,7 +2,7 @@
  * @Author: 唐云
  * @Date: 2021-07-25 21:48:32
  * @Last Modified by: 唐云
- * @Last Modified time: 2021-08-24 15:00:52
+ * @Last Modified time: 2021-08-25 10:50:25
  * 球员管理
  */
 const Player = require('../models/players')
@@ -11,6 +11,7 @@ const Nation = require('../models/nations')
 const { Op } = require('sequelize')
 const { returnCtxBody, createTree, fileUpload } = require('../utils/index')
 const sequelize = require('../models/db')
+const Ability = require('../models/abilities')
 
 class PlayerCtl {
   // 获取球员列表
@@ -134,6 +135,30 @@ class PlayerCtl {
         },
       },
     })
+    ctx.body = returnCtxBody({})
+  }
+
+  // 获取球员能力值
+  async findAbility(ctx) {
+    const { id } = ctx.request.body
+    const res = await Ability.findOne({ where: { player_id: id } })
+    console.log(res)
+    ctx.body = returnCtxBody({
+      data: {
+        records: res,
+      },
+    })
+  }
+
+  // 更新球员能力值
+  async updateAbility(ctx) {
+    const {id} = ctx.request.body
+    // id存在执行更新，不存在执行新增
+    if (id) {
+      await Ability.update(ctx.request.body, { where: { id } })
+    } else {
+      await Ability.create(ctx.request.body)
+    }
     ctx.body = returnCtxBody({})
   }
 }
