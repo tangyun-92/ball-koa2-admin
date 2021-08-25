@@ -2,7 +2,7 @@
  * @Author: 唐云
  * @Date: 2021-07-25 21:48:32
  * @Last Modified by: 唐云
- * @Last Modified time: 2021-08-25 11:23:05
+ * @Last Modified time: 2021-08-25 14:47:29
  * 球员管理
  */
 const Player = require('../models/players')
@@ -13,6 +13,7 @@ const { returnCtxBody, createTree, fileUpload } = require('../utils/index')
 const sequelize = require('../models/db')
 const Ability = require('../models/abilities')
 const Position = require('../models/positions')
+const PlayerData = require('../models/player-datas')
 
 class PlayerCtl {
   // 获取球员列表
@@ -182,6 +183,44 @@ class PlayerCtl {
     } else {
       await Position.create(ctx.request.body)
     }
+    ctx.body = returnCtxBody({})
+  }
+
+  // 获取球员历史数据
+  async findPlayerData(ctx) {
+    const { id } = ctx.request.body
+    const res = await PlayerData.findAll({
+      where: { player_id: id },
+      order: [['time', 'DESC']],
+    })
+    ctx.body = returnCtxBody({
+      data: {
+        records: res,
+      },
+    })
+  }
+
+  // 新增/更新球员历史数据
+  async updatePlayerData(ctx) {
+    const { id } = ctx.request.body
+    if (id) {
+      await PlayerData.update(ctx.request.body, { where: { id } })
+    } else {
+      await PlayerData.create(ctx.request.body)
+    }
+    ctx.body = returnCtxBody({})
+  }
+
+  // 删除球员历史数据
+  async deletePlayerData(ctx) {
+    const { id } = ctx.request.body
+    await PlayerData.destroy({
+      where: {
+        id: {
+          [Op.or]: id,
+        },
+      },
+    })
     ctx.body = returnCtxBody({})
   }
 }
