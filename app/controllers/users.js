@@ -2,7 +2,7 @@
  * @Author: 唐云
  * @Date: 2021-07-25 21:48:32
  * @Last Modified by: 唐云
- * @Last Modified time: 2021-08-24 13:46:06
+ * @Last Modified time: 2021-08-26 14:22:47
  * 用户
  */
 const User = require('../models/users')
@@ -34,10 +34,20 @@ class UserCtl {
       { expiresIn: '1d' }
     )
     ctx.body = {
-      data: { token, username },
+      data: { token, username, role: 'admin' },
       status: 200,
       message: '登录成功',
       result: true,
+    }
+  }
+
+  // 退出登录
+  async logout(ctx) {
+    ctx.body = {
+      data: {},
+      status: 200,
+      message: '退出登录成功',
+      result: true
     }
   }
 
