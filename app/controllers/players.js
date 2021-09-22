@@ -2,7 +2,7 @@
  * @Author: 唐云
  * @Date: 2021-07-25 21:48:32
  * @Last Modified by: 唐云
- * @Last Modified time: 2021-09-22 10:29:24
+ * @Last Modified time: 2021-09-22 10:52:49
  * 球员管理
  */
 const Player = require('../models/players')
@@ -154,8 +154,9 @@ class PlayerCtl {
   // 更新球员能力值
   async updateAbility(ctx) {
     const { player_id } = ctx.request.body
-    // id存在执行更新，不存在执行新增
-    if (player_id) {
+    const res = await Ability.findOne({ where: { player_id } })
+    // player_id存在执行更新，不存在执行新增
+    if (res) {
       await Ability.update(ctx.request.body, { where: { player_id } })
     } else {
       await Ability.create(ctx.request.body)
@@ -177,8 +178,9 @@ class PlayerCtl {
   // 更新球员位置
   async updatePosition(ctx) {
     const { player_id } = ctx.request.body
-    // id存在执行更新，不存在执行新增
-    if (player_id) {
+    const res = await Position.findOne({ where: { player_id } })
+    // player_id存在执行更新，不存在执行新增
+    if(res) {
       await Position.update(ctx.request.body, { where: { player_id } })
     } else {
       await Position.create(ctx.request.body)
