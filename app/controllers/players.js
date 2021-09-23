@@ -2,7 +2,7 @@
  * @Author: 唐云
  * @Date: 2021-07-25 21:48:32
  * @Last Modified by: 唐云
- * @Last Modified time: 2021-09-23 10:57:44
+ * @Last Modified time: 2021-09-23 15:00:12
  * 球员管理
  */
 const Player = require('../models/players')
@@ -15,6 +15,7 @@ const Ability = require('../models/abilities')
 const Position = require('../models/positions')
 const PlayerData = require('../models/player-datas')
 const PlayerHonor = require('../models/player-honors')
+const PlayerTransfer = require('../models/player-transfer')
 
 class PlayerCtl {
   // 获取球员列表
@@ -268,6 +269,64 @@ class PlayerCtl {
   async deletePlayerHonor(ctx) {
     const { id } = ctx.request.body
     await PlayerHonor.destroy({
+      where: {
+        id: {
+          [Op.or]: id,
+        },
+      },
+    })
+    ctx.body = returnCtxBody({})
+  }
+
+  // 获取球员转会记录
+  async findPlayerTransfer(ctx) {
+    const { id } = ctx.request.body
+    const res = await PlayerTransfer.findAll({
+      where: {
+        player_id: id,
+      },
+      order: [['time', 'DESC']],
+      attributes: {
+        include: [
+          [sequelize.col('ot.name'), 'old_team'],
+          [sequelize.col('nt.name'), 'new_team'],
+        ],
+      },
+      include: [
+        {
+          model: Team,
+          as: 'ot',
+          attributes: [],
+        },
+        {
+          model: Team,
+          as: 'nt',
+          attributes: [],
+        },
+      ],
+    })
+    ctx.body = returnCtxBody({
+      data: {
+        records: res,
+      },
+    })
+  }
+
+  // 新增/更新球员转会记录
+  async updatePlayerTransfer(ctx) {
+    const { id } = ctx.request.body
+    if (id) {
+      await PlayerTransfer.update(ctx.request.body, { where: { id } })
+    } else {
+      await PlayerTransfer.create(ctx.request.body)
+    }
+    ctx.body = returnCtxBody({})
+  }
+
+  // 删除球员转会记录
+  async deletePlayerTransfer(ctx) {
+    const { id } = ctx.request.body
+    await PlayerTransfer.destroy({
       where: {
         id: {
           [Op.or]: id,
