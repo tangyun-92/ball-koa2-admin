@@ -2,7 +2,7 @@
  * @Author: 唐云
  * @Date: 2021-07-25 21:48:32
  * @Last Modified by: 唐云
- * @Last Modified time: 2021-09-23 15:00:12
+ * @Last Modified time: 2021-09-23 16:03:48
  * 球员管理
  */
 const Player = require('../models/players')
@@ -16,6 +16,7 @@ const Position = require('../models/positions')
 const PlayerData = require('../models/player-datas')
 const PlayerHonor = require('../models/player-honors')
 const PlayerTransfer = require('../models/player-transfer')
+const PlayerInjury = require('../models/player-injury')
 
 class PlayerCtl {
   // 获取球员列表
@@ -327,6 +328,56 @@ class PlayerCtl {
   async deletePlayerTransfer(ctx) {
     const { id } = ctx.request.body
     await PlayerTransfer.destroy({
+      where: {
+        id: {
+          [Op.or]: id,
+        },
+      },
+    })
+    ctx.body = returnCtxBody({})
+  }
+
+  // 获取球员伤病记录
+  async findPlayerInjury(ctx) {
+    const { id } = ctx.request.body
+    const res = await PlayerInjury.findAll({
+      where: {
+        player_id: id,
+      },
+      order: [['end_time', 'DESC']],
+      attributes: {
+        include: [[sequelize.col('t.name'), 'team']],
+      },
+      include: [
+        {
+          model: Team,
+          as: 't',
+          attributes: [],
+        },
+      ],
+    })
+    ctx.body = returnCtxBody({
+      data: {
+        records: res,
+      },
+    })
+  }
+
+  // 新增/更新球员伤病记录
+  async updatePlayerInjury(ctx) {
+    const { id } = ctx.request.body
+    if (id) {
+      await PlayerInjury.update(ctx.request.body, { where: { id } })
+    } else {
+      await PlayerInjury.create(ctx.request.body)
+    }
+    ctx.body = returnCtxBody({})
+  }
+
+  // 删除球员伤病记录
+  async deletePlayerInjury(ctx) {
+    const { id } = ctx.request.body
+    await PlayerInjury.destroy({
       where: {
         id: {
           [Op.or]: id,
