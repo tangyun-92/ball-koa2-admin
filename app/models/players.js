@@ -2,7 +2,7 @@
  * @Author: 唐云
  * @Date: 2021-07-25 21:49:05
  * @Last Modified by: 唐云
- * @Last Modified time: 2021-08-24 14:41:01
+ * @Last Modified time: 2021-09-23 10:56:32
  * 球员模型
  */
 const { DataTypes } = require('sequelize')
@@ -120,7 +120,8 @@ const Player = sequelize.define(
   }
 )
 
-Player.belongsTo(Team, { foreignKey: 'team_id', targetKey: 'id', as: 't' }) // 如果对应 Role 关联的是主键则不用写 targetKey，否则需要 targetKey: id
-Player.belongsTo(Nation, { foreignKey: 'nation_id', targetKey: 'id', as: 'n' }) // 如果对应 Role 关联的是主键则不用写 targetKey，否则需要 targetKey: id
+Player.belongsTo(Team, { foreignKey: 'team_id', targetKey: 'id', as: 't' }) // 如果对应 Team 关联的是主键则不用写 targetKey，否则需要 targetKey: id
+Player.belongsTo(Nation, { foreignKey: 'nation_id', targetKey: 'id', as: 'n' }) // 如果对应 Nation 关联的是主键则不用写 targetKey，否则需要 targetKey: id
+
 
 module.exports = Player

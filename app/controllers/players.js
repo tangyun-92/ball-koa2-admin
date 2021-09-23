@@ -2,7 +2,7 @@
  * @Author: 唐云
  * @Date: 2021-07-25 21:48:32
  * @Last Modified by: 唐云
- * @Last Modified time: 2021-09-22 10:52:49
+ * @Last Modified time: 2021-09-23 10:57:44
  * 球员管理
  */
 const Player = require('../models/players')
@@ -14,6 +14,7 @@ const sequelize = require('../models/db')
 const Ability = require('../models/abilities')
 const Position = require('../models/positions')
 const PlayerData = require('../models/player-datas')
+const PlayerHonor = require('../models/player-honors')
 
 class PlayerCtl {
   // 获取球员列表
@@ -180,7 +181,7 @@ class PlayerCtl {
     const { player_id } = ctx.request.body
     const res = await Position.findOne({ where: { player_id } })
     // player_id存在执行更新，不存在执行新增
-    if(res) {
+    if (res) {
       await Position.update(ctx.request.body, { where: { player_id } })
     } else {
       await Position.create(ctx.request.body)
@@ -217,6 +218,56 @@ class PlayerCtl {
   async deletePlayerData(ctx) {
     const { id } = ctx.request.body
     await PlayerData.destroy({
+      where: {
+        id: {
+          [Op.or]: id,
+        },
+      },
+    })
+    ctx.body = returnCtxBody({})
+  }
+
+  // 获取球员荣誉记录
+  async findPlayerHonor(ctx) {
+    const { id } = ctx.request.body
+    const res = await PlayerHonor.findAll({
+      where: {
+        player_id: id,
+      },
+      order: [['time', 'DESC']],
+      attributes: {
+        include: [[sequelize.col('t.name'), 'team']],
+      },
+      include: [
+        {
+          model: Team,
+          as: 't',
+          attributes: [],
+        },
+      ],
+    })
+    ctx.body = returnCtxBody({
+      data: {
+        records: res,
+      },
+    })
+  }
+
+  // 新增/更新球员荣誉记录
+  async updatePlayerHonor(ctx) {
+    const { id } = ctx.request.body
+    if (id) {
+      await PlayerHonor.update(ctx.request.body, { where: { id } })
+    } else {
+      await PlayerHonor.create(ctx.request.body)
+    }
+    ctx.body = returnCtxBody({})
+  }
+
+  // 删除球员荣誉记录
+  async deletePlayerHonor(ctx) {
+    const { id } = ctx.request.body
+    await PlayerHonor.destroy({
       where: {
         id: {
           [Op.or]: id,

@@ -2,7 +2,7 @@
  * @Author: 唐云 
  * @Date: 2021-07-25 21:48:41 
  * @Last Modified by: 唐云
- * @Last Modified time: 2021-08-25 14:47:58
+ * @Last Modified time: 2021-09-22 16:10:58
  * 球员路由
  */
 const Router = require('koa-router')
@@ -20,7 +20,10 @@ const {
   updatePosition,
   findPlayerData,
   updatePlayerData,
-  deletePlayerData
+  deletePlayerData,
+  findPlayerHonor,
+  updatePlayerHonor,
+  deletePlayerHonor
 } = require('../controllers/players')
 
 const { secret } = require('../config/jwt')
@@ -41,5 +44,8 @@ router.post('/updatePosition', auth, updatePosition)
 router.post('/findPlayerData', auth, findPlayerData)
 router.post('/updatePlayerData', auth, updatePlayerData)
 router.post('/deletePlayerData', auth, deletePlayerData)
+router.post('/findPlayerHonor', auth, findPlayerHonor)
+router.post('/updatePlayerHonor', auth, updatePlayerHonor)
+router.post('/deletePlayerHonor', auth, deletePlayerHonor)
 
 module.exports = router
