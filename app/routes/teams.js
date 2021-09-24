@@ -2,7 +2,7 @@
  * @Author: 唐云 
  * @Date: 2021-07-25 21:48:41 
  * @Last Modified by: 唐云
- * @Last Modified time: 2021-09-24 10:06:54
+ * @Last Modified time: 2021-09-24 10:55:03
  * 球队管理路由
  */
 const Router = require('koa-router')
@@ -13,7 +13,10 @@ const {
   find,
   update,
   delete: del,
-  upload
+  upload,
+  findTeamData,
+  updateTeamData,
+  deleteTeamData
 } = require('../controllers/teams')
 
 const { secret } = require('../config/jwt')
@@ -27,5 +30,8 @@ router.post('/list', auth, find)
 router.post('/update', auth, update)
 router.post('/delete', auth, del)
 router.post('/upload', auth, upload)
+router.post('/findTeamData', auth, findTeamData)
+router.post('/updateTeamData', auth, updateTeamData)
+router.post('/deleteTeamData', auth, deleteTeamData)
 
 module.exports = router
