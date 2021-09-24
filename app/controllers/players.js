@@ -2,7 +2,7 @@
  * @Author: 唐云
  * @Date: 2021-07-25 21:48:32
  * @Last Modified by: 唐云
- * @Last Modified time: 2021-09-23 16:34:03
+ * @Last Modified time: 2021-09-24 16:45:29
  * 球员管理
  */
 const Player = require('../models/players')
@@ -22,7 +22,7 @@ class PlayerCtl {
   // 获取球员列表
   async find(ctx) {
     let {
-      page = 1,
+      currentPage = 1,
       pageSize = 5,
       name = '',
       english_name = '',
@@ -30,10 +30,10 @@ class PlayerCtl {
       nation_id = '',
       position = '',
     } = ctx.request.body
-    page = Math.max(page, 1)
+    currentPage = Math.max(currentPage, 1)
     pageSize = Math.max(pageSize, 1)
     const { count, rows } = await Player.findAndCountAll({
-      offset: (page - 1) * pageSize,
+      offset: (currentPage - 1) * pageSize,
       limit: pageSize,
       order: [['id', 'DESC']],
       where: {
@@ -75,7 +75,7 @@ class PlayerCtl {
     ctx.body = returnCtxBody({
       data: {
         records: rows,
-        page,
+        currentPage,
         pageSize,
         total: count,
       },

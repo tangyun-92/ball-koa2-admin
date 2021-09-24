@@ -2,7 +2,7 @@
  * @Author: 唐云 
  * @Date: 2021-09-24 09:35:52 
  * @Last Modified by: 唐云
- * @Last Modified time: 2021-09-24 11:11:29
+ * @Last Modified time: 2021-09-24 16:45:15
  * 球队管理
  */
 
@@ -15,15 +15,15 @@ class TeamCtl {
   // 获取球队列表
   async find(ctx) {
     let {
-      page = 1,
+      currentPage = 1,
       pageSize = 5,
       name = '',
       english_name = '',
     } = ctx.request.body
-    page = Math.max(page, 1)
+    currentPage = Math.max(currentPage, 1)
     pageSize = Math.max(pageSize, 1)
     const { count, rows } = await Team.findAndCountAll({
-      offset: (page - 1) * pageSize,
+      offset: (currentPage - 1) * pageSize,
       limit: pageSize,
       order: [['id', 'DESC']],
       where: {
@@ -38,7 +38,7 @@ class TeamCtl {
     ctx.body = returnCtxBody({
       data: {
         records: rows,
-        page,
+        currentPage,
         pageSize,
         total: count,
       },
