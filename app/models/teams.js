@@ -2,14 +2,14 @@
  * @Author: 唐云
  * @Date: 2021-07-25 21:49:05
  * @Last Modified by: 唐云
- * @Last Modified time: 2021-08-24 09:48:18
+ * @Last Modified time: 2021-09-24 09:38:08
  * 球队模型
  */
 const { DataTypes } = require('sequelize')
 const sequelize = require('./db')
 
-const Player = sequelize.define(
-  'Players',
+const Team = sequelize.define(
+  'Teams',
   {
     id: {
       type: DataTypes.INTEGER.UNSIGNED,
@@ -71,6 +71,11 @@ const Player = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    // 队徽
+    team_logo: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     tableName: 't_team',
@@ -78,4 +83,4 @@ const Player = sequelize.define(
   }
 )
 
-module.exports = Player
+module.exports = Team

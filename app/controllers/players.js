@@ -2,7 +2,7 @@
  * @Author: 唐云
  * @Date: 2021-07-25 21:48:32
  * @Last Modified by: 唐云
- * @Last Modified time: 2021-09-23 16:03:48
+ * @Last Modified time: 2021-09-23 16:34:03
  * 球员管理
  */
 const Player = require('../models/players')
@@ -133,6 +133,48 @@ class PlayerCtl {
   // 删除球员
   async delete(ctx) {
     const { id } = ctx.request.body
+    await PlayerData.destroy({
+      where: {
+        player_id: {
+          [Op.or]: id,
+        },
+      },
+    })
+    await PlayerHonor.destroy({
+      where: {
+        player_id: {
+          [Op.or]: id,
+        },
+      },
+    })
+    await PlayerTransfer.destroy({
+      where: {
+        player_id: {
+          [Op.or]: id,
+        },
+      },
+    })
+    await PlayerInjury.destroy({
+      where: {
+        player_id: {
+          [Op.or]: id,
+        },
+      },
+    })
+    await Ability.destroy({
+      where: {
+        player_id: {
+          [Op.or]: id,
+        },
+      },
+    })
+    await Position.destroy({
+      where: {
+        player_id: {
+          [Op.or]: id,
+        },
+      },
+    })
     await Player.destroy({
       where: {
         id: {
