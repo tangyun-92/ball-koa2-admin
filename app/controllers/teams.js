@@ -2,7 +2,7 @@
  * @Author: 唐云 
  * @Date: 2021-09-24 09:35:52 
  * @Last Modified by: 唐云
- * @Last Modified time: 2021-09-28 09:30:14
+ * @Last Modified time: 2021-09-28 11:00:19
  * 球队管理
  */
 
@@ -83,6 +83,20 @@ class TeamCtl {
   // 删除球队
   async delete(ctx) {
     const { id } = ctx.request.body
+    await TeamData.destroy({
+      where: {
+        team_id: {
+          [Op.or]: id,
+        },
+      },
+    })
+    await TeamHonor.destroy({
+      where: {
+        team_id: {
+          [Op.or]: id,
+        },
+      },
+    })
     await Team.destroy({
       where: {
         id: {
