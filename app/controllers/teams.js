@@ -2,12 +2,13 @@
  * @Author: 唐云 
  * @Date: 2021-09-24 09:35:52 
  * @Last Modified by: 唐云
- * @Last Modified time: 2021-09-24 16:45:15
+ * @Last Modified time: 2021-09-28 09:30:14
  * 球队管理
  */
 
 const Team = require("../models/teams")
 const TeamData = require('../models/team-datas')
+const TeamHonor = require('../models/team-honors')
 const { Op } = require('sequelize')
 const { returnCtxBody, fileUpload } = require('../utils/index')
 
@@ -121,6 +122,44 @@ class TeamCtl {
   async deleteTeamData(ctx) {
     const { id } = ctx.request.body
     await TeamData.destroy({
+      where: {
+        id: {
+          [Op.or]: id,
+        },
+      },
+    })
+    ctx.body = returnCtxBody({})
+  }
+
+  // 获取球队荣誉记录
+  async findTeamHonor(ctx) {
+    const { id } = ctx.request.body
+    const res = await TeamHonor.findAll({
+      where: { team_id: id },
+      order: [['time', 'DESC']],
+    })
+    ctx.body = returnCtxBody({
+      data: {
+        records: res,
+      },
+    })
+  }
+
+  // 新增/更新球队荣誉记录
+  async updateTeamHonor(ctx) {
+    const { id } = ctx.request.body
+    if (id) {
+      await TeamHonor.update(ctx.request.body, { where: { id } })
+    } else {
+      await TeamHonor.create(ctx.request.body)
+    }
+    ctx.body = returnCtxBody({})
+  }
+
+  // 删除球队荣誉记录
+  async deleteTeamHonor(ctx) {
+    const { id } = ctx.request.body
+    await TeamHonor.destroy({
       where: {
         id: {
           [Op.or]: id,
